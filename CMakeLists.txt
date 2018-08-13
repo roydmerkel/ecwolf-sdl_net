@@ -1,4 +1,6 @@
-find_package(SDL2 REQUIRED)
+if(NOT TARGET SDL2::SDL2)
+	find_package(SDL2 REQUIRED)
+endif()
 
 add_library(SDL2_net STATIC
 	SDL_net.h
