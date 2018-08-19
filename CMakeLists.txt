@@ -10,6 +10,9 @@ add_library(SDL2_net STATIC
 	SDLnetUDP.c
 )
 
-target_link_libraries(SDL2_net SDL2::SDL2)
+target_link_libraries(SDL2_net PUBLIC SDL2::SDL2)
+if(WIN32)
+	target_link_libraries(SDL2_net PRIVATE iphlpapi wsock32)
+endif()
 
 target_include_directories(SDL2_net PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}")
