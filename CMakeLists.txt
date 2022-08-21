@@ -1,4 +1,5 @@
-cmake_minimum_required(VERSION 3.16)
+# ECWolf: Lower cmake requirement
+cmake_minimum_required(VERSION 3.10)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
 
@@ -45,10 +46,11 @@ include(CMakeDependentOption)
 include(CMakePackageConfigHelpers)
 include(GNUInstallDirs)
 
-option(CMAKE_POSITION_INDEPENDENT_CODE "Build static libraries with -fPIC" ON)
-option(BUILD_SHARED_LIBS "Build the library as a shared library" ON)
+# ECWolf: Set options to constants for vendoring
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+set(BUILD_SHARED_LIBS OFF)
 
-option(SDL2NET_INSTALL "Enable SDL2_net install target" ${SDL2NET_ROOTPROJECT})
+set(SDL2NET_INSTALL OFF)
 
 cmake_dependent_option(SDL2NET_SAMPLES "Build SDL2_net samples" ${SDL2NET_ROOTPROJECT} "${SDL2test_FOUND}" OFF)
 
@@ -69,7 +71,12 @@ else()
     set(sdl2_target_name SDL2::SDL2-static)
 endif()
 
-sdl_find_sdl2(${sdl2_target_name} ${SDL_REQUIRED_VERSION})
+# ECWolf: See if we're handling the SDL2 target
+if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
+    sdl_find_sdl2(${sdl2_target_name} ${SDL_REQUIRED_VERSION})
+else()
+    set(sdl2_target_name SDL2::SDL2)
+endif()
 
 add_library(SDL2_net
     SDLnet.c
